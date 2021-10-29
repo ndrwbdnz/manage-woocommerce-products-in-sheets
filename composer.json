@@ -1,0 +1,11 @@
+
+{
+    "_comment": "reference page: https://roots.io/wordpress-plugins-with-composer/",
+    "name": "poofi/pricing-tools",
+    "type": "wordpress-plugin",
+	"description": "woocommerce plugin that allows for managing prices in aelia currency switcher and aelia prices by country",
+    "require": {
+        "google/apiclient": "^2.0",
+        "composer/installers": "v1.0.6"
+    }
+}

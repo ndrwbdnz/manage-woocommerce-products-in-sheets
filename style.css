@@ -1,0 +1,12 @@
+
+#footer-thankyou, .update-nag, .notice{
+    display: none !important;
+}
+
+.align-right{
+    float: right;
+}
+
+#ppt_new_sheet_id{
+    width: 25em;
+}
