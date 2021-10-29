@@ -1,9 +1,13 @@
 <?php
-/* 
-Plugin Name: Poofi Tools
-Versiom: 1.0
-Description: narzędzia do zarządzania funkcjami strony
-*/
+/**
+ * Plugin Name: Woocommerce Manage Products in Google Sheets
+ * Plugin URI:
+ * Description: Download products and their details to Google Sheets, Manage them there and save them back to Woocommerce.
+ * Version: 1.0
+ * Author: Andrzej Bednorz
+ * Author URI: https://github.com/ndrwbdnz
+ * License: GPL3
+ */
 
 if (is_Admin()){                    //to prevent conflict of guzzle composer libraries between moosend and poofi text
 
