@@ -1,13 +1,9 @@
 <?php
-/**
- * Plugin Name: Woocommerce Manage Products in Google Sheets
- * Plugin URI:
- * Description: Download products and their details to Google Sheets, Manage them there and save them back to Woocommerce.
- * Version: 1.0
- * Author: Andrzej Bednorz
- * Author URI: https://github.com/ndrwbdnz
- * License: GPL3
- */
+/* 
+Plugin Name: Manage Woocommerce Products in Sheets
+Versiom: 0.1
+Description: Load woocommerce products details into google sheets, modify them and save back in the wordpress database.
+*/
 
 if (is_Admin()){                    //to prevent conflict of guzzle composer libraries between moosend and poofi text
 
@@ -22,8 +18,6 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
         //https://www.twilio.com/blog/2017/03/google-spreadsheets-and-php.html
         //https://developers.google.com/sheets/api/quickstart/php
     require __DIR__ . '/vendor/autoload.php';
-    //include('manage-pricing.php');
-    //include('process-prices.php');
     //add_action('plugins_loaded', 'ppt_get_prices');
     //add_action('woocommerce_init', 'ppt_get_values_array', 10);
     //add_action( 'admin_footer', 'ppt_javascript' );
@@ -86,74 +80,6 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
         <?php
     }
 
-    /*function ppt_javascript(){ ?>
-        <script>
-            jQuery(document).ready(function($) {
-                var applyMapContainerHeight = function() {
-                    if($("body").hasClass("product_page_pricing")){
-                        var height = document.body.clientHeight - 84; //jQuery("#wpbody").height();
-                        var width = document.body.clientWidth - ($("#wpcontent").outerWidth(true) - $("#wpcontent").width()) - 10; //jQuery("#wpbody").width();
-                        $("#sheetiframe").height(height);
-                        $("#sheetiframe").width(width);
-                        $("#wpbody").css({position: 'fixed'})
-                    }
-                };
-
-                $(document).ready(function() {
-                    applyMapContainerHeight();
-                });
-
-                $(window).resize(function() {
-                    applyMapContainerHeight();
-                });
-
-                // $("#wpcontent").on('resize', function() {
-                //     setTimeout(applyMapContainerHeight(), 1000);
-                // });
-
-                $("#ppt_save_prices_button").on('click', function() {
-                    if (confirm('Are you suer you want to </br> SAVE </br> the changes to the database? This action cannot be reversed.')) {
-                        //alert('SAVING');
-                        $("#ppt_save_prices_button").prop('disabled', true);
-                        $("#ppt_load_prices_button").prop('disabled', true);
-                        $("#ppt_spinner").addClass("is-active");
-
-                        var data = {
-                            'action': 'ppt_save_prices'
-                        };
-                        jQuery.post(ajaxurl, data, function(response) {
-                            //alert('Got this from the server: ' + response);
-                            $("#ppt_save_prices_button").prop('disabled', false);
-                            $("#ppt_load_prices_button").prop('disabled', false);
-                            $("#ppt_spinner").removeClass("is-active");
-                        });
-                    }
-                });
-
-                $("#ppt_load_prices_button").on('click', function() {
-                    if (confirm('Are you suer you want to </br> LOAD </br> prices from the database? All changes in the "main" tab will be lost.')) {
-                        //alert('LOADING');
-                        $("#ppt_save_prices_button").prop('disabled', true);
-                        $("#ppt_load_prices_button").prop('disabled', true);
-                        $("#ppt_spinner").addClass("is-active");
-
-                        var data = {
-                            'action': 'ppt_load_prices'
-                        };
-                        jQuery.post(ajaxurl, data, function(response) {
-                            //alert('Got this from the server: ' + response);
-                            $("#ppt_save_prices_button").prop('disabled', false);
-                            $("#ppt_load_prices_button").prop('disabled', false);
-                            $("#ppt_spinner").removeClass("is-active");
-                        });
-                    }
-                });
-            });
-        </script>
-        <?php 
-    }
-    */
-
 	function ppt_javascript() {
 		wp_register_script('ppt_scripts', home_url() . '/wp-content/plugins/poofi-tools/script.js', array( 'jquery' ));
 		wp_enqueue_script('ppt_scripts');
@@ -173,7 +99,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
         $client->setApplicationName('My PHP App');
         $client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
         $client->setAccessType('offline');
-        $client->setAuthConfig(__DIR__ . '/pricing-67e0327e6f5c.json');
+        $client->setAuthConfig(__DIR__ . '/credentials.json');
 
         // With the Google_Client we can get a Google_Service_Sheets service object to interact with sheets
         $service = new \Google_Service_Sheets($client);
@@ -181,7 +107,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
 
     function ppt_get_prices_array(){
         global $values_array;
-        //$lang = pll_default_language();
+        $lang = pll_default_language();
         $aepbc = $GLOBALS["wc-aelia-prices-by-country"];
         $aecs = $GLOBALS["woocommerce-aelia-currencyswitcher"];
         $base_currency = $aepbc->base_currency();
@@ -196,7 +122,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
         $r = 0;
         $c = 0;
 
-        //$values_array[$r][$c++] = "main language product ID";
+        $values_array[$r][$c++] = "main language product ID";
         $values_array[$r][$c++] = "product ID";
         $values_array[$r][$c++] = "admin link";
         $values_array[$r][$c++] = "link to image";
@@ -224,7 +150,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
             $r1 = $r+1;
             $c = 0;
 
-            //$values_array[$r][$c++] = pll_get_post($product->ID, $lang);                                                                        //polylang main language product id
+            $values_array[$r][$c++] = pll_get_post($product->ID, $lang);                                                                        //polylang main language product id
             $values_array[$r][$c++] = $product->ID;                                                                                             //product ID
             $values_array[$r][$c++] = site_url("/wp-admin/post.php?post=" . $product->ID . "&action=edit");                                     //link to edit in admin
             $values_array[$r][$c++] = nts($image_array[0]);                                                                                          //link to image
@@ -267,7 +193,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
                     $r1 = $r+1;
                     $c = 0;
 
-                    //$values_array[$r][$c++] = pll_get_post($product->ID, $lang);                                                                        //polylang main language product id
+                    $values_array[$r][$c++] = pll_get_post($product->ID, $lang);                                                                        //polylang main language product id
                     $values_array[$r][$c++] = $variation->ID;                                                                                           //variation ID
                     $values_array[$r][$c++] = site_url("/wp-admin/post.php?post=" . $product->ID . "&action=edit");                                     //link to edit in admin
                     $values_array[$r][$c++] = nts($image_array[0]);                                                                                          //link to image

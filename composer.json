@@ -1,11 +1,24 @@
-
 {
     "_comment": "reference page: https://roots.io/wordpress-plugins-with-composer/",
-    "name": "poofi/pricing-tools",
+    "name": "ndrwbdnz/manage-woocommerce-products-in-sheets",
     "type": "wordpress-plugin",
-	"description": "woocommerce plugin that allows for managing prices in aelia currency switcher and aelia prices by country",
+	"description": "woocommerce plugin that allows managing product attributes and other parameters across wordpress multisite using google sheets",
     "require": {
-        "google/apiclient": "^2.0",
-        "composer/installers": "v1.0.6"
+        "google/apiclient": "^2.12.1",
+        "composer/installers": "v1.0.6",
+        "wp-user-manager/wp-optionskit": "^1.0"
+    },
+    "scripts": {
+        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+    },
+    "extra": {
+        "google/apiclient-services": [
+            "Sheets"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
     }
 }

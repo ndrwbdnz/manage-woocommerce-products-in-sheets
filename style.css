@@ -1,6 +1,6 @@
 
-#footer-thankyou, .update-nag, .notice{
-    display: none !important;
+#footer-thankyou{
+    display: none;
 }
 
 .align-right{
