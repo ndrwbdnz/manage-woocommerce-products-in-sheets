@@ -5,7 +5,7 @@ Versiom: 0.1
 Description: Load woocommerce products details into google sheets, modify them and save back in the wordpress database.
 */
 
-if (is_Admin()){                    //to prevent conflict of guzzle composer libraries between moosend and poofi text
+if (is_Admin()){
 
 /* global variables ------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -14,13 +14,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
     $values_array = array();
 
 /* includes and hooks ----------------------------------------------------------------------------------------------------------------------------------*/
-    //based on https://www.fillup.io/post/read-and-write-google-sheets-from-php/
-        //https://www.twilio.com/blog/2017/03/google-spreadsheets-and-php.html
-        //https://developers.google.com/sheets/api/quickstart/php
     require __DIR__ . '/vendor/autoload.php';
-    //add_action('plugins_loaded', 'ppt_get_prices');
-    //add_action('woocommerce_init', 'ppt_get_values_array', 10);
-    //add_action( 'admin_footer', 'ppt_javascript' );
     add_action( 'admin_enqueue_scripts', 'ppt_javascript' );
     add_action( 'admin_enqueue_scripts', 'ppt_custom_wp_admin_style' );
     add_action( 'wp_ajax_ppt_save_prices', 'ppt_save_prices' );
@@ -45,10 +39,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
     }
 
 /* admin ----------------------------------------------------------------------------------------------------------------------------------------------*/
-    function ppt_save_sheet_id(){                           //function ppt_settings(){
-        //update_option( 'ppt_spreadsheet_id', '1xruTkqP1J-vgQ2NVVAkichpaadL7yd1jRYA7PsKWzK0' );
-        //update_option( 'ppt_spreadsheet_id', '2PACX-1vQ6Xwb5rs48aWhZAH-I8oCzAWiMb9vcnArT2mmuNsfx3t3uCDscv6LgOPGse1miRaK_pW5qAwhxZ6ES' );
-        //2PACX-1vQ6Xwb5rs48aWhZAH-I8oCzAWiMb9vcnArT2mmuNsfx3t3uCDscv6LgOPGse1miRaK_pW5qAwhxZ6ES
+    function ppt_save_sheet_id(){
         update_option( 'ppt_spreadsheet_id', $_POST['sheet_id'] );
         wp_die();
     }
@@ -58,11 +49,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
     }
 
     function ppt_pricing_admin_page(){
-        //ppt_settings(); //later can move this to a separate admin settings page
         $iframe_link = "https://docs.google.com/spreadsheets/d/".get_option('ppt_spreadsheet_id')."/edit?usp=sharing&amp;widget=true&amp;headers=true&amp;embedded=true";
-        //$iframe_link = "https://docs.google.com/a/poofi.pl/spreadsheets/d/e/".get_option('ppt_spreadsheet_id')."/pubhtml?widget=true&amp;headers=false";
-        //$iframe_link = "https://docs.google.com/spreadsheets/d/e/".get_option('ppt_spreadsheet_id')."/pubhtml?widget=true&amp;headers=false";
-        //2PACX-1vQ6Xwb5rs48aWhZAH-I8oCzAWiMb9vcnArT2mmuNsfx3t3uCDscv6LgOPGse1miRaK_pW5qAwhxZ6ES
         ?>
         <div class='wrap'>
             <h1>Pricing Admin Page</h1>
@@ -96,7 +83,7 @@ if (is_Admin()){                    //to prevent conflict of guzzle composer lib
         global $service;
         // get a Google_Client object first to handle auth and api calls, etc.
         $client = new \Google_Client();
-        $client->setApplicationName('My PHP App');
+        $client->setApplicationName('Manage Woo Products');
         $client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
         $client->setAccessType('offline');
         $client->setAuthConfig(__DIR__ . '/credentials.json');
